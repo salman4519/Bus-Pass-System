@@ -1,73 +1,51 @@
-# Welcome to your Lovable project
+# SmartPass Campus Sync
 
-## Project info
+SmartPass Campus Sync is a production-ready web application for managing college bus passes, seats, and daily trip logging with a Google Sheets + Google Apps Script backend.
 
-**URL**: https://lovable.dev/projects/62e9b0a4-20fb-45c2-ba2e-3738c6cf1c5c
+## Features
 
-## How can I edit this code?
+- QR-powered student check-in with seat validation
+- Animated student and admin portals with route separation (`/` and `/admin`)
+- Real-time seat, pass, and trip dashboards backed by Google Sheets
+- CSV export, QR code generation, and responsive UI built with shadcn/ui + Tailwind CSS
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- React 18 + TypeScript (Vite)
+- Tailwind CSS / shadcn-ui component library
+- TanStack Query for data fetching & caching
+- html5-qrcode for scanning and qrcode for generation
+- Google Apps Script Web App as the API layer (Google Sheets datastore)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/62e9b0a4-20fb-45c2-ba2e-3738c6cf1c5c) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+2. **Configure environment**
+   - Create an `.env.local` file in the project root:
+     ```env
+     VITE_SMARTPASS_API_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+     ```
+   - Replace the URL with your deployed Apps Script Web App.
+3. **Run the dev server**
+   ```bash
+   npm run dev
+   ```
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
 
-**Use your preferred IDE**
+## Backend Setup
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The project includes `public/google-apps-script.gs` with seats, passes, and trips endpoints. Deploy it as a Web App (execute as “Me”, accessible to “Anyone”) and keep the Spreadsheet ID in sync with your Google Sheet.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Deployment
 
-Follow these steps:
+Deploy the built assets to any static hosting provider (Vercel, Netlify, GitHub Pages, etc.). Ensure `VITE_SMARTPASS_API_URL` is set in the hosting environment to point at your Apps Script deployment.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## License
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/62e9b0a4-20fb-45c2-ba2e-3738c6cf1c5c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is provided for institutional/educational use. Adapt as needed for your organization.

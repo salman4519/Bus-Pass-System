@@ -6,18 +6,20 @@ A production-ready, client-grade web application for automating seat validation,
 
 ### Student Portal
 - **QR Code Scanner**: Real-time camera-based QR scanning
-- **Seat Validation**: Automatic seat information retrieval
+- **Seat Validation**: Automatic seat information retrieval from Google Sheets
 - **Trip Logging**: Log morning and evening trips with full details
 - **Auto-fill Forms**: Smart form population based on scanned data
+- **Immersive UI**: Animated, neon-inspired interface with bold typography
 - **Mobile-First Design**: Optimized for smartphone usage
 
 ### Admin Portal
 - **Trip Dashboard**: Real-time trip statistics with morning/evening counters
 - **Live Trip Table**: View all trips with filtering and export options
-- **Seat Management**: Add, edit, and delete seat registrations
+- **Seat Management**: Add, update, or delete seat registrations
 - **Pass Management**: Manage student pass IDs with search functionality
 - **QR Generator**: Bulk generate QR codes for seat ranges (1-50 at a time)
 - **Data Export**: Export trip data to CSV for record-keeping
+- **Dedicated Route**: `/admin` route isolates admin tooling from the student interface
 
 ## 🎨 Design System
 
@@ -30,9 +32,9 @@ A production-ready, client-grade web application for automating seat validation,
 - **Destructive**: Red for warnings
 
 ### Typography
-- **Font Family**: Inter (Google Fonts)
-- **Weights**: 300-800 for hierarchy
-- **Professional, clean, and highly readable**
+- **Primary Sans**: Space Grotesk (400-700) for body and UI text
+- **Display Accent**: Bangers for hero headings and brand signatures
+- **Professional, clean, and highly readable with a bold hero presence**
 
 ### UI Components
 - Card-based layout with subtle shadows
@@ -97,7 +99,9 @@ src/
 │       ├── PassManagement.tsx   # Pass CRUD operations
 │       └── QRGenerator.tsx      # Bulk QR generation
 ├── pages/
-│   └── Index.tsx                # Main application page
+│   ├── AdminPortal.tsx          # Dedicated admin route (`/admin`)
+│   ├── Index.tsx                # Re-export for backwards compatibility
+│   └── UserPortal.tsx           # Student experience (`/` and `/student`)
 ├── index.css                    # Design system tokens
 └── tailwind.config.ts           # Tailwind configuration
 
@@ -131,7 +135,7 @@ npm install
 3. **Configure Environment**
 Create `.env.local`:
 ```env
-VITE_API_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+VITE_SMARTPASS_API_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 ```
 
 4. **Run Development Server**
@@ -193,13 +197,17 @@ npm run build
 ## 📊 API Endpoints
 
 ### GET Requests
-- `?action=getSeat&seatNumber=15` - Get seat info
-- `?action=countTrips` - Get trip counts
-- `?action=getTrips` - Get all today's trips
+- `?action=getSeat&seatNumber=15` - Get seat info by seat number
+- `?action=getSeats` - List all registered seats
+- `?action=getPasses` - List all registered passes
+- `?action=countTrips` - Get trip counts for today
+- `?action=getTrips` - Get all trips for today
 
 ### POST Requests
-- `addSeat` - Register new seat
-- `addPass` - Register new pass
+- `addSeat` - Register or update a seat
+- `deleteSeat` - Remove a seat by seat number
+- `addPass` - Register a new pass
+- `deletePass` - Remove a pass by pass ID
 - `addTrip` - Log a trip
 
 See `DEPLOYMENT_GUIDE.md` for complete API documentation.

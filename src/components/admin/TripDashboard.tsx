@@ -1,74 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Sunrise, Moon, Download, RefreshCw } from 'lucide-react';
+import { Sunrise, Moon, Download, RefreshCw, CheckCircle2, XCircle, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-
-interface Trip {
-  timestamp: string;
-  tripType: string;
-  seatNumber: string;
-  passId: string;
-  name: string;
-  semester: string;
-  program: string;
-}
+import { fetchTripCounts, fetchTrips, TripRecord } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 export const TripDashboard = () => {
-  const [morningCount, setMorningCount] = useState(0);
-  const [eveningCount, setEveningCount] = useState(0);
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const fetchTripData = async () => {
-    setIsLoading(true);
-    try {
-      // Simulate API call to Google Apps Script
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock data
-      const mockTrips: Trip[] = [
-        {
-          timestamp: new Date().toISOString(),
-          tripType: 'morning',
-          seatNumber: '15',
-          passId: 'PASS001',
-          name: 'John Doe',
-          semester: '4',
-          program: 'Computer Science'
-        },
-        {
-          timestamp: new Date().toISOString(),
-          tripType: 'evening',
-          seatNumber: '20',
-          passId: 'PASS002',
-          name: 'Jane Smith',
-          semester: '3',
-          program: 'Electronics'
-        }
-      ];
-
-      setTrips(mockTrips);
-      setMorningCount(mockTrips.filter(t => t.tripType === 'morning').length);
-      setEveningCount(mockTrips.filter(t => t.tripType === 'evening').length);
-      toast.success('Trip data refreshed');
-    } catch (error) {
-      toast.error('Failed to fetch trip data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const exportToCSV = () => {
-    const headers = ['Timestamp', 'Trip Type', 'Seat', 'Pass ID', 'Name', 'Semester', 'Program'];
-    const rows = trips.map(t => [
+    const headers = ['Timestamp', 'Trip Type', 'Seat', 'Pass ID', 'Name', 'Semester', 'Program', 'Destination', 'Fare Paid'];
+    const rows = (tripData ?? []).map(t => [
       new Date(t.timestamp).toLocaleString(),
       t.tripType,
       t.seatNumber,
       t.passId,
       t.name,
       t.semester,
-      t.program
+      t.program,
+      t.destination,
+      t.farePaid ? 'TRUE' : 'FALSE',
     ]);
 
     const csvContent = [
@@ -84,10 +34,47 @@ export const TripDashboard = () => {
     a.click();
     toast.success('CSV exported successfully');
   };
+  
+  const {
+    data: tripCounts,
+    isFetching: isCountsFetching,
+    refetch: refetchCounts,
+  } = useQuery({
+    queryKey: ['trip-counts'],
+    queryFn: fetchTripCounts,
+    refetchInterval: 60_000,
+    onError: (error: unknown) => {
+      toast.error(`Failed to load trip counts: ${(error as Error).message}`);
+    },
+  });
 
-  useEffect(() => {
-    fetchTripData();
-  }, []);
+  const {
+    data: tripData,
+    isFetching: isTripsFetching,
+    refetch: refetchTrips,
+  } = useQuery({
+    queryKey: ['trip-list'],
+    queryFn: fetchTrips,
+    refetchInterval: 60_000,
+    onError: (error: unknown) => {
+      toast.error(`Failed to load trip list: ${(error as Error).message}`);
+    },
+  });
+
+  const morningCount = tripCounts?.morning ?? 0;
+  const eveningCount = tripCounts?.evening ?? 0;
+  const isRefreshing = isCountsFetching || isTripsFetching;
+
+  const refreshAll = async () => {
+    try {
+      await Promise.all([refetchCounts(), refetchTrips()]);
+      toast.success('Trip data refreshed');
+    } catch (error) {
+      toast.error(`Failed to refresh trips: ${(error as Error).message}`);
+    }
+  };
+
+  const trips = useMemo<TripRecord[]>(() => tripData ?? [], [tripData]);
 
   return (
     <div className="space-y-6">
@@ -130,12 +117,12 @@ export const TripDashboard = () => {
             </div>
             <div className="flex gap-2">
               <Button 
-                onClick={fetchTripData} 
-                disabled={isLoading}
+                onClick={refreshAll} 
+                disabled={isRefreshing}
                 variant="outline"
                 size="sm"
               >
-                <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
               <Button 
@@ -161,6 +148,8 @@ export const TripDashboard = () => {
                   <th className="text-left py-3 px-4 font-semibold text-sm">Name</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm hidden lg:table-cell">Semester</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm hidden xl:table-cell">Program</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm hidden md:table-cell">Destination</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Fare</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,13 +157,23 @@ export const TripDashboard = () => {
                   <tr key={index} className="border-b border-border hover:bg-muted/50 transition-colors">
                     <td className="py-3 px-4 text-sm">{new Date(trip.timestamp).toLocaleTimeString()}</td>
                     <td className="py-3 px-4">
-                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                        trip.tripType === 'morning' 
-                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                          : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
-                      }`}>
-                        {trip.tripType === 'morning' ? <Sunrise className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
-                        {trip.tripType}
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${(() => {
+                        const type = (trip.tripType || '').toLowerCase();
+                        if (type === 'morning') {
+                          return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
+                        }
+                        if (type === 'evening') {
+                          return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400';
+                        }
+                        return 'bg-muted text-muted-foreground';
+                      })()}`}>
+                        {(() => {
+                          const type = (trip.tripType || '').toLowerCase();
+                          if (type === 'morning') return <Sunrise className="h-3 w-3" />;
+                          if (type === 'evening') return <Moon className="h-3 w-3" />;
+                          return <MapPin className="h-3 w-3" />;
+                        })()}
+                        {trip.tripType || 'N/A'}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-sm font-medium">{trip.seatNumber}</td>
@@ -182,6 +181,18 @@ export const TripDashboard = () => {
                     <td className="py-3 px-4 text-sm">{trip.name}</td>
                     <td className="py-3 px-4 text-sm hidden lg:table-cell">{trip.semester}</td>
                     <td className="py-3 px-4 text-sm hidden xl:table-cell">{trip.program}</td>
+                    <td className="py-3 px-4 text-sm hidden md:table-cell">{trip.destination}</td>
+                    <td className="py-3 px-4 text-sm">
+                      {trip.farePaid ? (
+                        <span className="inline-flex items-center gap-1 text-success">
+                          <CheckCircle2 className="h-4 w-4" /> Paid
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-destructive">
+                          <XCircle className="h-4 w-4" /> Pending
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

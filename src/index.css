@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -121,12 +123,17 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold;
+  }
+
+  ::selection {
+    background-color: hsla(var(--accent), 0.3);
   }
 }
 
@@ -150,6 +157,9 @@ All colors MUST be HSL.
   .shadow-card-hover {
     box-shadow: var(--shadow-lg);
   }
-}
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  .glass-panel {
+    backdrop-filter: blur(16px);
+    background-color: hsla(var(--card), 0.8);
+  }
+}

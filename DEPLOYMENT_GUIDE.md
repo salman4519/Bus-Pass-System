@@ -75,7 +75,7 @@ Create 3 separate sheets (tabs) with the following names and headers:
 Create a file named `.env.local` in the root of your project:
 
 ```env
-VITE_API_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+VITE_SMARTPASS_API_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 ```
 
 Replace `YOUR_DEPLOYMENT_ID` with your actual deployment ID from the Web app URL.
@@ -125,21 +125,16 @@ YOUR_WEB_APP_URL?action=getTrips
 
 ## Part 5: Deploying Frontend
 
-### Option 1: Deploy via Lovable (Easiest)
-1. Click **Publish** button in Lovable
-2. Follow the deployment steps
-3. Your app will be live at `yourdomain.lovable.app`
-
-### Option 2: Deploy to Vercel
+### Option 1: Deploy to Vercel
 1. Push code to GitHub
 2. Connect to Vercel
-3. Add environment variable: `VITE_API_URL`
+3. Add environment variable: `VITE_SMARTPASS_API_URL`
 4. Deploy
 
-### Option 3: Deploy to Netlify
+### Option 2: Deploy to Netlify
 1. Push code to GitHub
 2. Connect to Netlify
-3. Add environment variable: `VITE_API_URL`
+3. Add environment variable: `VITE_SMARTPASS_API_URL`
 4. Deploy
 
 ---
@@ -171,6 +166,18 @@ GET ?action=getSeat&seatNumber=15
 Response: { success: true, data: { seatNumber: "15", position: "Window Left" } }
 ```
 
+#### List Seats
+```
+GET ?action=getSeats
+Response: { success: true, data: [{ seatNumber: "1", position: "Window Left" }, ...] }
+```
+
+#### List Passes
+```
+GET ?action=getPasses
+Response: { success: true, data: [{ passId: "PASS001", studentName: "John Doe" }, ...] }
+```
+
 #### Count Trips
 ```
 GET ?action=countTrips
@@ -195,6 +202,15 @@ POST
 }
 ```
 
+#### Delete Seat
+```json
+POST
+{
+  "action": "deleteSeat",
+  "seatNumber": "15"
+}
+```
+
 #### Add Pass
 ```json
 POST
@@ -202,6 +218,15 @@ POST
   "action": "addPass",
   "passId": "PASS001",
   "studentName": "John Doe"
+}
+```
+
+#### Delete Pass
+```json
+POST
+{
+  "action": "deletePass",
+  "passId": "PASS001"
 }
 ```
 

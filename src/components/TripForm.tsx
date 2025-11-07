@@ -6,6 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sunrise, Moon, MapPin } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { logTrip } from '@/lib/api';
+import { Switch } from '@/components/ui/switch';
 
 interface TripFormProps {
   seatNumber: string;
@@ -18,46 +21,50 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
     fullName: '',
     semester: '',
     program: '',
+    destination: '',
+    farePaid: true,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
-  const handleSubmit = async (tripType: 'morning' | 'evening') => {
-    // Validation
-    if (!formData.passId || !formData.fullName || !formData.semester || !formData.program) {
-      toast.error('Please fill in all fields');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    // Simulate API call
-    try {
-      // Here you would call your Google Apps Script endpoint
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const tripData = {
-        timestamp: new Date().toISOString(),
+  const logTripMutation = useMutation({
+    mutationFn: (tripType: 'morning' | 'evening') =>
+      logTrip({
         tripType,
         seatNumber,
         seatPosition,
-        ...formData,
-      };
-
-      console.log('Trip logged:', tripData);
+        passId: formData.passId,
+        fullName: formData.fullName,
+        semester: formData.semester,
+        program: formData.program,
+        destination: formData.destination,
+        farePaid: formData.farePaid,
+      }),
+    onSuccess: (_response, tripType) => {
       toast.success(`${tripType === 'morning' ? '🕘 Morning' : '🌙 Evening'} trip logged successfully!`);
-      
-      // Reset form
       setFormData({
         passId: '',
         fullName: '',
         semester: '',
         program: '',
+        destination: '',
+        farePaid: true,
       });
-    } catch (error) {
-      toast.error('Failed to log trip. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      queryClient.invalidateQueries({ queryKey: ['trip-list'] });
+      queryClient.invalidateQueries({ queryKey: ['trip-counts'] });
+    },
+    onError: (error, variables) => {
+      const tripLabel = variables === 'morning' ? 'Morning' : 'Evening';
+      toast.error(`${tripLabel} trip failed: ${(error as Error).message}`);
+    },
+  });
+
+  const handleSubmit = async (tripType: 'morning' | 'evening') => {
+    // Validation
+    if (!formData.passId || !formData.fullName || !formData.semester || !formData.program || !formData.destination) {
+      toast.error('Please fill in all fields');
+      return;
     }
+    logTripMutation.mutate(tripType);
   };
 
   return (
@@ -143,11 +150,34 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
           </div>
         </div>
 
+        <div>
+          <Label htmlFor="destination">Destination *</Label>
+          <Input
+            id="destination"
+            placeholder="Where are you headed?"
+            value={formData.destination}
+            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+            className="mt-1"
+          />
+        </div>
+
+        <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
+          <div>
+            <Label htmlFor="farePaid" className="text-sm font-medium">Fare Paid</Label>
+            <p className="text-xs text-muted-foreground">Toggle off if fare is pending.</p>
+          </div>
+          <Switch
+            id="farePaid"
+            checked={formData.farePaid}
+            onCheckedChange={(checked) => setFormData({ ...formData, farePaid: checked })}
+          />
+        </div>
+
         {/* Trip Type Buttons */}
         <div className="grid grid-cols-2 gap-3 pt-2">
           <Button
             onClick={() => handleSubmit('morning')}
-            disabled={isSubmitting}
+            disabled={logTripMutation.isPending}
             className="h-14 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold"
           >
             <Sunrise className="mr-2 h-5 w-5" />
@@ -155,7 +185,7 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
           </Button>
           <Button
             onClick={() => handleSubmit('evening')}
-            disabled={isSubmitting}
+            disabled={logTripMutation.isPending}
             className="h-14 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold"
           >
             <Moon className="mr-2 h-5 w-5" />

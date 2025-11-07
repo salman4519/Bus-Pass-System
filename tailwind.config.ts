@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["'Space Grotesk'", 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ["'Bangers'", 'cursive'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -88,10 +92,25 @@ export default {
             height: "0",
           },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-18px)" },
+        },
+        "float-slower": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(20px)" },
+        },
+        pulseGlow: {
+          "0%, 100%": { opacity: "0.35" },
+          "50%": { opacity: "0.85" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float-slow": "float 8s ease-in-out infinite",
+        "float-slower": "float-slower 12s ease-in-out infinite",
+        "pulse-glow": "pulseGlow 10s ease-in-out infinite",
       },
     },
   },
