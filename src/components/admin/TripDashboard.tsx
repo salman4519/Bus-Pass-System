@@ -1,0 +1,199 @@
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Sunrise, Moon, Download, RefreshCw } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+interface Trip {
+  timestamp: string;
+  tripType: string;
+  seatNumber: string;
+  passId: string;
+  name: string;
+  semester: string;
+  program: string;
+}
+
+export const TripDashboard = () => {
+  const [morningCount, setMorningCount] = useState(0);
+  const [eveningCount, setEveningCount] = useState(0);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchTripData = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate API call to Google Apps Script
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock data
+      const mockTrips: Trip[] = [
+        {
+          timestamp: new Date().toISOString(),
+          tripType: 'morning',
+          seatNumber: '15',
+          passId: 'PASS001',
+          name: 'John Doe',
+          semester: '4',
+          program: 'Computer Science'
+        },
+        {
+          timestamp: new Date().toISOString(),
+          tripType: 'evening',
+          seatNumber: '20',
+          passId: 'PASS002',
+          name: 'Jane Smith',
+          semester: '3',
+          program: 'Electronics'
+        }
+      ];
+
+      setTrips(mockTrips);
+      setMorningCount(mockTrips.filter(t => t.tripType === 'morning').length);
+      setEveningCount(mockTrips.filter(t => t.tripType === 'evening').length);
+      toast.success('Trip data refreshed');
+    } catch (error) {
+      toast.error('Failed to fetch trip data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Timestamp', 'Trip Type', 'Seat', 'Pass ID', 'Name', 'Semester', 'Program'];
+    const rows = trips.map(t => [
+      new Date(t.timestamp).toLocaleString(),
+      t.tripType,
+      t.seatNumber,
+      t.passId,
+      t.name,
+      t.semester,
+      t.program
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trips-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    toast.success('CSV exported successfully');
+  };
+
+  useEffect(() => {
+    fetchTripData();
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      {/* Trip Counters */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card className="shadow-card border-l-4 border-l-amber-500">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Sunrise className="h-5 w-5 text-amber-500" />
+              Morning Trips
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-amber-500">{morningCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Students traveled this morning</p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-card border-l-4 border-l-indigo-500">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Moon className="h-5 w-5 text-indigo-500" />
+              Evening Trips
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold text-indigo-500">{eveningCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Students traveled this evening</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Trip Table */}
+      <Card className="shadow-card">
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <CardTitle>Today's Trips</CardTitle>
+              <CardDescription>Real-time trip attendance tracking</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                onClick={fetchTripData} 
+                disabled={isLoading}
+                variant="outline"
+                size="sm"
+              >
+                <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <Button 
+                onClick={exportToCSV}
+                variant="outline"
+                size="sm"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Time</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Trip</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Seat</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Pass ID</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm">Name</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm hidden lg:table-cell">Semester</th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm hidden xl:table-cell">Program</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trips.map((trip, index) => (
+                  <tr key={index} className="border-b border-border hover:bg-muted/50 transition-colors">
+                    <td className="py-3 px-4 text-sm">{new Date(trip.timestamp).toLocaleTimeString()}</td>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                        trip.tripType === 'morning' 
+                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                          : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
+                      }`}>
+                        {trip.tripType === 'morning' ? <Sunrise className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
+                        {trip.tripType}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-sm font-medium">{trip.seatNumber}</td>
+                    <td className="py-3 px-4 text-sm">{trip.passId}</td>
+                    <td className="py-3 px-4 text-sm">{trip.name}</td>
+                    <td className="py-3 px-4 text-sm hidden lg:table-cell">{trip.semester}</td>
+                    <td className="py-3 px-4 text-sm hidden xl:table-cell">{trip.program}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {trips.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                No trips recorded yet today
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
