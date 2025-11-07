@@ -322,7 +322,12 @@ function addTrip(data) {
   
   sheet.appendRow(rowValues);
   
-  return createResponse(true, 'Trip logged successfully');
+  return createResponse(true, 'Trip logged successfully', {
+    timestamp: rowValues[0],
+    tripType: rowValues[1],
+    seatNumber: rowValues[2],
+    passId: rowValues[4]
+  });
 }
 
 /**
@@ -397,14 +402,16 @@ function getTrips() {
 /**
  * Create standardized JSON response
  */
-function createResponse(success, message, data = null) {
+function createResponse(success, message, data) {
   const response = {
     success: success,
     message: message
   };
   
-  if (data !== null) {
+  if (typeof data !== 'undefined' && data !== null) {
     response.data = data;
+  } else if (success) {
+    response.data = { message: message };
   }
   
   return ContentService
