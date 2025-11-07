@@ -10,16 +10,11 @@ import { fetchSeat, SeatRecord } from '@/lib/api';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BusFront, Compass, Scan, Sparkles, Wand2 } from 'lucide-react';
 
-const parseSeatNumber = (rawValue: string): string | null => {
+const parseSeatLabel = (rawValue: string): string | null => {
   if (!rawValue) return null;
-
   const cleaned = rawValue.trim();
-  const numericMatch = cleaned.match(/\d+/);
-  if (numericMatch) {
-    return numericMatch[0];
-  }
-
-  return null;
+  if (!cleaned) return null;
+  return cleaned.toUpperCase();
 };
 
 const infoPoints = [
@@ -77,7 +72,7 @@ const ManualSeatForm = ({
           id="manual-seat"
           placeholder="Type seat number if QR is unreadable"
           value={seatNumber}
-          onChange={(event) => setSeatNumber(event.target.value)}
+          onChange={(event) => setSeatNumber(event.target.value.toUpperCase())}
           className="h-12 bg-white/90 text-slate-900 placeholder:text-slate-500"
         />
         <Button
@@ -109,7 +104,7 @@ const UserPortal = () => {
   });
 
   const handleSeatLookup = (seatNumber: string) => {
-    const normalized = seatNumber.trim();
+    const normalized = seatNumber.trim().toUpperCase();
     if (!normalized) {
       toast.error('Seat number is empty. Try scanning again.');
       return;
@@ -120,7 +115,7 @@ const UserPortal = () => {
   };
 
   const handleScanSuccess = (rawValue: string) => {
-    const seatNumber = parseSeatNumber(rawValue);
+    const seatNumber = parseSeatLabel(rawValue);
     if (!seatNumber) {
       toast.error('QR code did not contain a seat number. Try again.');
       return;
@@ -130,7 +125,7 @@ const UserPortal = () => {
   };
 
   const handleFallbackSubmit = () => {
-    const seatNumber = parseSeatNumber(lastScannedValue || seatInfo?.seatNumber || '');
+    const seatNumber = parseSeatLabel(lastScannedValue || seatInfo?.seatNumber || '');
     if (!seatNumber) {
       toast.error('Please provide a valid seat number');
       return;
