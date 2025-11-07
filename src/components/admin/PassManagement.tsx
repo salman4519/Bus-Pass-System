@@ -101,7 +101,7 @@ export const PassManagement = () => {
             <Plus className="h-5 w-5 text-accent" />
             Add New Pass
           </CardTitle>
-          <CardDescription>Register a new student pass</CardDescription>
+          <CardDescription>Register a new college bus pass for a student</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-4">

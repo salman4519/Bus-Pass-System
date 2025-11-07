@@ -112,8 +112,8 @@ export const TripDashboard = () => {
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <CardTitle>Today's Trips</CardTitle>
-              <CardDescription>Real-time trip attendance tracking</CardDescription>
+              <CardTitle>Today's Bus Trips</CardTitle>
+              <CardDescription>Real-time student bus trip attendance tracking</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button 

@@ -45,16 +45,16 @@ const AdminPortal = () => {
               </div>
               <div>
                 <h1 className="font-display text-4xl uppercase tracking-[0.1em] drop-shadow-lg sm:text-5xl">
-                  SmartPass Command Center
+                  College Transport Admin
                 </h1>
                 <p className="mt-3 max-w-2xl text-base text-white/70 sm:text-lg">
-                  Monitor live trips, manage seat allocations, and keep passes up to date. Everything you change reflects instantly inside your Google Sheet dataset.
+                  Manage student bus passes, monitor daily trips, and track seat allocations. All changes sync instantly with your Google Sheets database.
                 </p>
               </div>
             </div>
             <Button asChild size="lg" variant="secondary" className="bg-white text-slate-900 hover:bg-emerald-100">
               <Link to="/" className="inline-flex items-center gap-2">
-                Back to Student Portal
+                View Student Portal
               </Link>
             </Button>
           </div>
@@ -83,9 +83,9 @@ const AdminPortal = () => {
         <main className="container mx-auto px-4 pb-20">
           <Card className="border-white/5 bg-white/10 backdrop-blur">
             <CardHeader className="border-b border-white/5">
-              <CardTitle className="text-2xl text-white">Operational Dashboard</CardTitle>
+              <CardTitle className="text-2xl text-white">Transport Management Dashboard</CardTitle>
               <CardDescription className="text-white/70">
-                Switch between trips, seats, passes, and QR generator to control your transport programme.
+                Manage student bus passes, track daily trips, allocate seats, and monitor college transport operations.
               </CardDescription>
             </CardHeader>
             <CardContent className="bg-slate-950/40">
@@ -96,7 +96,7 @@ const AdminPortal = () => {
 
         <footer className="border-t border-white/10 bg-white/5 py-6 text-center text-sm text-white/60 backdrop-blur">
           <p>
-            SmartPass Campus Sync Admin · Changes propagate instantly to your Google Sheets backend.
+            College Bus Pass System Admin · All changes sync instantly with your Google Sheets database.
           </p>
         </footer>
       </div>

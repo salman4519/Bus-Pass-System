@@ -192,9 +192,9 @@ export const QRScanner = ({ onScanSuccess }: QRScannerProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Camera className="h-5 w-5 text-accent" />
-          Scan Your Seat QR Code
+          Scan Your Bus Seat QR Code
         </CardTitle>
-        <CardDescription>Point your camera at the QR code on your seat</CardDescription>
+        <CardDescription>Point your camera at the QR code on your college bus seat</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="relative w-full max-w-lg mx-auto rounded-lg bg-black overflow-hidden min-h-[400px]">

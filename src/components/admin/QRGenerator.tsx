@@ -82,7 +82,7 @@ export const QRGenerator = () => {
             <QrCode className="h-5 w-5 text-accent" />
             QR Code Generator
           </CardTitle>
-          <CardDescription>Generate QR codes for seat ranges</CardDescription>
+          <CardDescription>Generate QR codes for college bus seat ranges</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-4">

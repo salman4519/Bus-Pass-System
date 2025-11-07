@@ -72,9 +72,9 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MapPin className="h-5 w-5 text-accent" />
-          Trip Information
+          Student Trip Information
         </CardTitle>
-        <CardDescription>Fill in your details to log your trip</CardDescription>
+        <CardDescription>Enter your student details to log your college bus trip</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Seat Info Display */}
@@ -94,10 +94,10 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
         {/* Form Fields */}
         <div className="space-y-3">
           <div>
-            <Label htmlFor="passId">Pass ID *</Label>
+            <Label htmlFor="passId">Bus Pass ID *</Label>
             <Input
               id="passId"
-              placeholder="Enter your pass ID"
+              placeholder="Enter your college bus pass ID"
               value={formData.passId}
               onChange={(e) => setFormData({ ...formData, passId: e.target.value })}
               className="mt-1"
@@ -105,7 +105,7 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
           </div>
 
           <div>
-            <Label htmlFor="fullName">Full Name *</Label>
+            <Label htmlFor="fullName">Student Name *</Label>
             <Input
               id="fullName"
               placeholder="Enter your full name"
@@ -150,21 +150,21 @@ export const TripForm = ({ seatNumber, seatPosition }: TripFormProps) => {
           </div>
         </div>
 
-        <div>
-          <Label htmlFor="destination">Destination *</Label>
-          <Input
-            id="destination"
-            placeholder="Where are you headed?"
-            value={formData.destination}
-            onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-            className="mt-1"
-          />
-        </div>
+          <div>
+            <Label htmlFor="destination">Destination *</Label>
+            <Input
+              id="destination"
+              placeholder="Enter your destination (e.g., College Campus, Home)"
+              value={formData.destination}
+              onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+              className="mt-1"
+            />
+          </div>
 
         <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
           <div>
-            <Label htmlFor="farePaid" className="text-sm font-medium">Fare Paid</Label>
-            <p className="text-xs text-muted-foreground">Toggle off if fare is pending.</p>
+            <Label htmlFor="farePaid" className="text-sm font-medium">Bus Fare Paid</Label>
+            <p className="text-xs text-muted-foreground">Toggle off if bus fare payment is pending.</p>
           </div>
           <Switch
             id="farePaid"

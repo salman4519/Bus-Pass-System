@@ -75,10 +75,10 @@ const AdminProtected = () => {
               </div>
             </div>
             <CardTitle className="text-center text-2xl font-semibold tracking-wide uppercase">
-              Admin Access Required
+              Transport Office Access
             </CardTitle>
             <CardDescription className="text-center text-sm text-slate-200/70">
-              Enter the administrator passcode to manage seats, passes, and trip data.
+              Enter the administrator passcode to access the college transport management system.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -102,7 +102,7 @@ const AdminProtected = () => {
                 Unlock Admin Console
               </Button>
               <p className="text-xs text-center text-white/60">
-                Authorized staff only. Contact the transport office if you need access.
+                Authorized transport office staff only. Contact your college administration for access.
               </p>
             </form>
           </CardContent>
@@ -115,7 +115,7 @@ const AdminProtected = () => {
     <div className="min-h-screen bg-slate-950 text-white">
       <div className="bg-black/50 px-4 py-3 shadow-lg backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between text-sm text-white/80">
-          <span>Administrator Mode</span>
+          <span>Transport Office Mode</span>
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline text-white/60">Authenticated</span>
             <Separator orientation="vertical" className="h-5 bg-white/20" />

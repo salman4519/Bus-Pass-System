@@ -20,17 +20,17 @@ const parseSeatLabel = (rawValue: string): string | null => {
 const infoPoints = [
   {
     title: 'Scan effortlessly',
-    description: 'Point your camera at the SmartPass QR sticker on your seat. The system recognises the seat instantly.',
+    description: 'Point your camera at the QR code on your bus seat. The system instantly recognizes your seat number.',
     icon: <Scan className="h-5 w-5" />,
   },
   {
     title: 'Confirm seat details',
-    description: 'We fetch seat position and metadata directly from your college sheet, so you can double-check in seconds.',
+    description: 'Your seat information is fetched from the college transport database, so you can verify your booking instantly.',
     icon: <Compass className="h-5 w-5" />,
   },
   {
-    title: 'Log the right trip',
-    description: 'Tap Morning or Evening to submit attendance with a single tap. Toast confirmations keep you informed.',
+    title: 'Log your bus trip',
+    description: 'Select Morning or Evening trip to record your commute. Get instant confirmation when your trip is logged.',
     icon: <Sparkles className="h-5 w-5" />,
   },
 ];
@@ -152,10 +152,10 @@ const UserPortal = () => {
               SmartPass
             </div>
             <h1 className="font-display text-4xl uppercase tracking-[0.08em] text-white drop-shadow-lg sm:text-5xl md:text-6xl">
-              Campus Sync Bus Pass
+              College Bus Pass Tracker
             </h1>
             <p className="max-w-2xl text-lg text-white/70 md:text-xl">
-              Real-time QR powered attendance for college commuters. Scan, confirm, and log your trip in under ten seconds.
+              Track your college bus trips with ease. Scan your seat QR code to log morning and evening commutes instantly.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="bg-white text-slate-900 hover:bg-emerald-100">
@@ -166,7 +166,7 @@ const UserPortal = () => {
               </Button>
               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-white/70">
                 <BusFront className="h-4 w-4" />
-                Morning & Evening Trips
+                Student Bus Tracking
               </div>
             </div>
           </div>
@@ -181,7 +181,7 @@ const UserPortal = () => {
                   Scan Your Seat QR
                 </CardTitle>
                 <CardDescription className="text-white/70">
-                  We instantly validate seat information directly from your institution&apos;s SmartPass sheet.
+                  Instantly validate your seat information from the college transport database.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -250,7 +250,7 @@ const UserPortal = () => {
                   </CardHeader>
                   <CardContent className="space-y-4 text-sm text-emerald-50">
                     <p>
-                      Seat details are synced with the official SmartPass sheet. Status: {seatInfo.status}. {seatInfo.available ? 'This seat is currently available.' : 'This seat is currently unavailable.'}
+                      Seat details are synced with the college transport database. Status: {seatInfo.status}. {seatInfo.available ? 'This seat is currently available for booking.' : 'This seat is currently unavailable.'}
                     </p>
                     <Button
                       variant="secondary"
@@ -275,12 +275,12 @@ const UserPortal = () => {
                     Ready to Log a Trip?
                   </CardTitle>
                   <CardDescription className="text-white/70">
-                    Scan a seat QR code or type your seat number to unlock the trip form.
+                    Scan your seat QR code or enter your seat number to start tracking your college bus trip.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="text-sm text-white/60">
                   <p>
-                    Once your seat is validated, the trip form will appear here. Have your SmartPass ID ready to complete the process in seconds.
+                    Once your seat is validated, the trip form will appear here. Enter your student details to log your morning or evening bus trip.
                   </p>
                 </CardContent>
               </Card>
@@ -289,7 +289,7 @@ const UserPortal = () => {
         </main>
 
         <footer className="border-t border-white/10 bg-white/5 py-6 text-center text-sm text-white/60 backdrop-blur">
-          <p>SmartPass Campus Sync © {new Date().getFullYear()} – Powered by real-time Google Sheets data.</p>
+          <p>College Bus Pass System © {new Date().getFullYear()} – Track your daily commutes to campus.</p>
         </footer>
       </div>
     </div>

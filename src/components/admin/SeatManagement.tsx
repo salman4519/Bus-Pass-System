@@ -101,7 +101,7 @@ export const SeatManagement = () => {
             <Plus className="h-5 w-5 text-accent" />
             Add New Seat
           </CardTitle>
-          <CardDescription>Register a new seat in the bus system</CardDescription>
+          <CardDescription>Register a new seat in the college bus system</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
